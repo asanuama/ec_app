@@ -1,31 +1,29 @@
 Rails.application.routes.draw do
-  get 'cartproducts/create'
-  get 'cartproducts/index'
-  get 'cartproducts/update'
-  get 'cartproducts/destory'
-  get 'cartproducts/destory_all'
-  get 'orders/new'
-  get 'orders/create'
-  get 'orders/index'
-  get 'orders/show'
-  get 'orders/edit'
-  get 'orders/confirm'
-  get 'orders/thanks'
-  get 'home/about'
-  get 'addresses/create'
-  get 'addresses/index'
-  get 'addresses/edit'
-  get 'addresses/update'
-  get 'addresses/destory'
-  get 'customers/show'
-  get 'customers/edit'
-  get 'customers/update'
-  get 'customers/resign'
-  get 'customers/resign_update'
-  get 'products/index'
-  get 'products/show'
-  get 'index/show'
-  devise_for :admins
-  devise_for :customers
+  
+  devise_for :customers ,controllers: {
+    sessions: 'customers/sessions',
+    registrations: 'customers/registrations'
+  }
+
+  devise_for :admins  ,controllers: {
+    sessions: 'admins/sessions'
+  }
+  
+  root 'homes#top'
+  get 'homes/about'
+  get 'customers/resign' => 'customers#resign'
+  patch 'customers/resign' => 'customers#resign_update'
+  resources :products, only: [:index, :show]
+  resources :customers, only: [:show, :edit, :update] do
+    resources :addresses, only: [:create, :index, :edit, :update, :destory]
+  end
+  resources :order_products
+  resources :cart_products, only:[:create, :index, :update, :destroy]
+  resources :orders do
+    collection do
+      post :confirm
+    end
+  end
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
