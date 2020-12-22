@@ -17,7 +17,7 @@ class Admin::ProductsController < ApplicationController
   
   def show
     @product = Product(params[:id])
-    
+    @genres = Genre.all
   end
   
   def edit 
